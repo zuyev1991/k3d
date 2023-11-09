@@ -6,13 +6,13 @@ servers: 1
 agents: 3
 image: rancher/k3s:v1.25.15-rc1-k3s1
 kubeAPI:
-  hostPort: "6443" 
+  hostPort: "6443"
 volumes: # repeatable flags are represented as YAML lists
   - volume: "$PWD/Volume:/tmp/k3dvol:shared" # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
     nodeFilters:
       - server:*
       - agent:*
-  - volume: "$PWD/Manifest/calico/tigera-operator.yaml:/var/lib/rancher/k3s/server/manifests/tigera-operator.yaml" # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
+  - volume: "$PWD/manifests/calico/tigera-operator.yaml:/var/lib/rancher/k3s/server/manifests/tigera-operator.yaml" # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
     nodeFilters:
       - server:*
 options:
