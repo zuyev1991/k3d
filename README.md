@@ -50,11 +50,11 @@ export KUBECONFIG=~/.kube/cluster-k3d-first
 kubectl get ns
 ```
 #### 5. Install Calico Component:
-   - Note: Check the files: `./Manifest/calico/Installation.yaml` and `./cluster.yaml`
+   - Note: Check the files: `./manifest/calico/Installation.yaml` and `./cluster.yaml`
   
-*cidr* into `./Manifest/calico/Installation.yaml` and *--cluster-cidr=192.168.0.0/16* into ./cluster.yaml should be the same
+*cidr* into `./manifest/calico/Installation.yaml` and *--cluster-cidr=192.168.0.0/16* into ./cluster.yaml should be the same
 ```
-kubectl apply -f  $PWD/Manifest/calico/installation.yaml
+kubectl apply -f  $PWD/manifest/calico/installation.yaml
 ```
 *And wait when all pods will status ready:*
 ![](Docs/static/pod_status.png)
@@ -68,9 +68,10 @@ chmod +x metallb.sh
 ./metallb.sh cluster-k3d-first
 cd ..
 ```
-#### 7. Create PV storage
+#### 7. Create PV storage and coreDns
 ```
-kubectl apply -f $PWD/Manifest/pv/pv.yaml
+kubectl apply -f $PWD/manifest/pv/pv.yaml
+kubectl apply -f $PWD/manifest/coredns/coredns.yaml
 ```
 #### 8. Create Nginx-ingress-controller
   - Name of the ingressClass: nginx-public-app
@@ -82,6 +83,8 @@ helm repo update nginx
 helm repo add nginx https://kubernetes.github.io/ingress-nginx -n nginx
 ```
 ```
-helm upgrade --install --atomic nginx nginx/ingress-nginx -f $PWD/Manifest/nginx/nginx.yaml -n nginx
+helm upgrade --install --atomic nginx nginx/ingress-nginx -f $PWD/manifest/nginx/nginx.yaml -n nginx
 ```
 ___
+#### 8. Demo cluster stack
+- [Minio](https://github.com/zuyev1991/minio)
