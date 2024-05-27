@@ -724,7 +724,7 @@ controller:
       metricRelabelings: []
 
     prometheusRule:
-      enabled: true
+      enabled: false
       additionalLabels:
         release: prometheus-community
       namespace: "monitoring"
