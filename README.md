@@ -20,6 +20,8 @@ Install local k8s cluster with:
 ```
 - [docker](https://docs.docker.com/install/)
   - Note: Install docker-desktop
+- [orbstack](https://orbstack.dev/download)
+  - Notes: Insall Orbstack
 - [k3d](https://k3d.io/v5.6.0/#install-specific-release)
   - Install k3d:
 ```
