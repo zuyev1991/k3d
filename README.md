@@ -27,8 +27,19 @@ Install local k8s cluster with:
 ```
 brew install k3d
 ``` 
+
+- [helm](https://helm.sh/docs/intro/install/)
+   - Notes: install the package manager for Kubernetes
 ## Usage
 Check out what you can do via `k3d help` or check the docs @ [k3d.io](https://k3d.io)
+
+Before start first cluster check your version of k3d, k3s
+```
+k3d --version
+```
+![](Docs/static/k3d_version.png)
+
+Change specific version of kubernetes server into cluster.yam, for release note k3s you can view link https://docs.k3s.io/release-notes/v1.30.X
 
 Example Workflow: Create a new cluster and use it with `kubectl`
 #### 1. Initial cluster with config cluster.yaml:
@@ -41,8 +52,7 @@ k3d cluster list
 ```
 #### 3. Megre and export cluster KUBECONFIG:
 ```
-k3d kubeconfig merge cluster-k3d-first \
-    --output ~/.kube/cluster-k3d-first
+k3d kubeconfig merge cluster-k3d-first --output ~/.kube/cluster-k3d-first
 ```
 ```
 export KUBECONFIG=~/.kube/cluster-k3d-first
@@ -52,17 +62,20 @@ export KUBECONFIG=~/.kube/cluster-k3d-first
 kubectl get ns
 ```
 #### 5. Install Calico Component:
-   - Note: Check the files: `./manifest/calico/Installation.yaml` and `./cluster.yaml`
-  
-*cidr* into `./manifest/calico/Installation.yaml` and *--cluster-cidr=192.168.0.0/16* into ./cluster.yaml should be the same
 ```
-kubectl apply -f  $PWD/manifest/calico/installation.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
+```
+   - Note: Check the files: `manifests/calico/installation.yaml` and `./cluster.yaml`
+  
+*cidr* into `manifests/calico/installation.yaml` and *--cluster-cidr=192.168.0.0/16* into ./cluster.yaml should be the same
+```
+kubectl apply -f  $PWD/manifests/calico/installation.yaml
 ```
 *And wait when all pods will status ready:*
 ![](Docs/static/pod_status.png)
 #### 6. Install Metallb into cluster
 ```
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.8/config/manifests/metallb-native.yaml
 ```
 ```
 cd $PWD/scripts
@@ -72,8 +85,8 @@ cd ..
 ```
 #### 7. Create PV storage and coreDns
 ```
-kubectl apply -f $PWD/manifest/pv/pv.yaml
-kubectl apply -f $PWD/manifest/coredns/coredns.yaml
+kubectl apply -f $PWD/manifests/pv/pv.yaml  
+kubectl apply -f $PWD/manifests/coredns/coredns.yaml
 ```
 #### 8. Create Nginx-ingress-controller
   - Name of the ingressClass: nginx-public-app
@@ -85,8 +98,20 @@ helm repo update nginx
 helm repo add nginx https://kubernetes.github.io/ingress-nginx -n nginx
 ```
 ```
-helm upgrade --install --atomic nginx nginx/ingress-nginx -f $PWD/manifest/nginx/nginx.yaml -n nginx
+helm upgrade --install --atomic nginx nginx/ingress-nginx -f $PWD/manifests/nginx/nginx.yaml -n nginx
 ```
+  - For testing lets get creating basic deployment and ingress with ingressClass: nginx-public-app
+  
+```
+kubectl apply -f $PWD/manifests/nginx/ingress.yaml       
+```
+  - Describe all created ingress, then make curl reguest for cheking
+```
+kubectl get ingress -A
+```
+![](Docs/static/ingress.png)
+```
+curl -v -H "Host: test-hello.dyn.example.com" http://172.17.0.100
+```
+![](Docs/static/curl_request.png)
 ___
-#### 8. Demo cluster stack
-- [Minio](https://github.com/zuyev1991/minio)

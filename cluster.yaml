@@ -2,40 +2,41 @@ apiVersion: k3d.io/v1alpha4
 kind: Simple
 metadata:
   name: cluster-k3d-first
-servers: 1
-agents: 3
-image: rancher/k3s:v1.25.15-rc1-k3s1
+servers: 1 #Number of master nodes
+agents: 3 #Number of worker nodes
+image: rancher/k3s:v1.31.0-rc2-k3s1 #k3s image of kubernetes version https://docs.k3s.io/release-notes/v1.30.X
 kubeAPI:
-  hostPort: "6443"
+  hostPort: "6443" # Kube API port 
 volumes: # repeatable flags are represented as YAML lists
   - volume: "$PWD/Volume:/tmp/k3dvol:shared" # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
     nodeFilters:
       - server:*
       - agent:*
+#volume mount from local machine to virtual servers
   - volume: "$PWD/manifests/calico/tigera-operator.yaml:/var/lib/rancher/k3s/server/manifests/tigera-operator.yaml" # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
     nodeFilters:
       - server:*
 options:
   k3s:
     extraArgs:
-      - arg: "--disable=traefik"
+      - arg: "--disable=traefik" # disable traefik api gateway (for use nginx ingress controller)
         nodeFilters:
           - server:*
-      - arg: "--disable=servicelb"
+      - arg: "--disable=servicelb" # disable LB controller  (for use  Metallb)
         nodeFilters:
           - server:*
-      - arg: "--disable=metrics-server"
+      - arg: "--disable=metrics-server" # disable native k3d  metrics-server
         nodeFilters:
           - server:*
-      - arg: "--disable=network-policy"
+      - arg: "--disable=network-policy" # disable network-policy (for use calico network plugin)
         nodeFilters:
           - server:*
-      - arg: "--flannel-backend=none"
+      - arg: "--flannel-backend=none" # disable network flannel network plugin (for use calico network plugin)
         nodeFilters:
           - server:*
-      - arg: "--cluster-cidr=192.168.0.0/16"
+      - arg: "--cluster-cidr=192.168.0.0/16" # discribe ip subnet for cluster 
         nodeFilters:
           - server:*
-      - arg: "--service-cidr=192.168.128.0/16"
+      - arg: "--service-cidr=192.168.128.0/16" # discribe ip subnet for kubernetes service 
         nodeFilters:
           - server:*
