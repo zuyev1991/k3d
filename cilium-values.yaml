@@ -13,7 +13,7 @@ ipv6:
 
 ipam:
   mode: kubernetes
-
+# Docker or Orbstack k3d-server IPv4Address
 k8sServiceHost: "192.168.97.2"
 k8sServicePort: 6443
 

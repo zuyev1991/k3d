@@ -4,7 +4,7 @@ metadata:
   name: cluster-k3d-first
 servers: 1
 agents: 3
-image: rancher/k3s:v1.31.0-rc2-k3s1
+image: rancher/k3s:v1.31.5-k3s1
 
 # (необязательно) если хочешь зафиксировать docker-сеть, укажи строкой:
 # network: "k3d-cluster-k3d-first"
